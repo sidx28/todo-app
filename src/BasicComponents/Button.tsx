@@ -2,9 +2,10 @@ import { ButtonHTMLAttributes, FC, memo } from "react";
 
 type ButtonProps = {
   theme?: "secondary" | "highlight";
+  icon?: JSX.Element;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button: FC<ButtonProps> = ({ theme, children, ...rest }) => {
+const Button: FC<ButtonProps> = ({ theme, children, icon, ...rest }) => {
   let themeClass =
     "text-white bg-gray-500 border-transparent hover:bg-gray-600 rounded-md";
   if (theme === "secondary") {
@@ -23,6 +24,7 @@ const Button: FC<ButtonProps> = ({ theme, children, ...rest }) => {
           themeClass
         }
       >
+        {icon && <span className="mr-1">{icon}</span>}
         {children}
       </button>
     </>
