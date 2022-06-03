@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { connect, useDispatch } from "react-redux";
-import { TODO_STATUS_CHANGE } from "../action/todos";
+import { todoStatusChange, TODO_STATUS_CHANGE } from "../action/todos";
 import { Todo } from "../models/todo";
 import {
   completeTodoSelector,
@@ -9,19 +9,18 @@ import {
 import { State } from "../store";
 import TodoTile from "./TodoTile";
 
-type TodoListProps = { todos: Todo[] };
+type TodoListProps = {
+  todos: Todo[];
+  onStatusChange: (id: number, done: boolean) => void;
+};
 
-const TodoList: FC<TodoListProps> = ({ todos }) => {
-  const dispatch = useDispatch();
-  const handleStatusChange = (id: number, done: boolean) => {
-    dispatch({ type: TODO_STATUS_CHANGE, payload: { id, done } });
-  };
+const TodoList: FC<TodoListProps> = ({ todos, onStatusChange }) => {
   return (
     <>
       <ul>
         {todos.map((e) => (
           <TodoTile
-            onStatusChange={handleStatusChange}
+            onStatusChange={onStatusChange}
             todo={e}
             key={e.id}
           ></TodoTile>
@@ -34,12 +33,18 @@ const TodoList: FC<TodoListProps> = ({ todos }) => {
 TodoList.defaultProps = {};
 
 export default memo(TodoList);
-
+const dispatchMapper = { onStatusChange: todoStatusChange };
 const incompleteMapper = (s: State) => ({ todos: incompleteTodoSelector(s) });
 
 const completeMapper = (s: State) => {
   return { todos: completeTodoSelector(s) };
 };
 
-export const IncompleteTodoList = connect(incompleteMapper)(TodoList);
-export const CompleteTodoList = connect(completeMapper)(TodoList);
+export const IncompleteTodoList = connect(
+  incompleteMapper,
+  dispatchMapper
+)(TodoList);
+export const CompleteTodoList = connect(
+  completeMapper,
+  dispatchMapper
+)(TodoList);

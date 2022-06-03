@@ -1,15 +1,12 @@
 import { createStore, Reducer } from "redux";
-import { TODO_STATUS_CHANGE } from "./action/todos";
+import { TODO_ADD, TODO_STATUS_CHANGE } from "./action/todos";
 import { Todo } from "./models/todo";
 
 export type State = { todos: Todo[] };
+let count = 0;
 
 const initialState: State = {
-  todos: [
-    { id: 1, title: "dfjsdgs", done: true },
-    { id: 2, title: "false", done: false },
-    { id: 3, title: "dfjsdgs", done: false },
-  ],
+  todos: [],
 };
 const reducer: Reducer<State> = (state = initialState, action) => {
   switch (action.type) {
@@ -23,6 +20,13 @@ const reducer: Reducer<State> = (state = initialState, action) => {
       });
       return { ...state, todos: newTodos };
     }
+    case TODO_ADD: {
+      const todoText = action.payload;
+      const todo: Todo = { id: count, title: todoText, done: false };
+      count++;
+      return { ...state, todos: [...state.todos, todo] };
+    }
+
     default:
       return state;
   }
